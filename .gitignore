@@ -1,0 +1,5 @@
+/node_modules
+/.env
+/insert_into_tables.sql
+/create_tables.sql
+.vercel
