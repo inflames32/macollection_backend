@@ -5,47 +5,72 @@ const albumController = {
     const albums = await Album.findAll();
     if (albums) {
       res.json({ albums: albums });
-      console.log(albums);
     }
   },
   getOneAlbumByID: async (req, res) => {
-    const albumID = req.params.id;
-    console.log(typeof albumID);
-    /*    const albumIDToString = albumID.toString();
-    console.log(albumIDToString); */
     try {
+      console.log(req.params.id);
+      if (req.params.id === "undefined") {
+        return;
+      }
       const album = await Album.findOne({
         where: {
-          id: albumID,
+          id: req.params.id,
         },
       });
+
       if (album === null) {
-        console.log("not found!");
+        console.log(res.response.dat);
+        return res.status(404).json({ error: "album not found!" });
+      } else if (!album) {
+        console.log(res.response.dat);
+        return res.status(404).json({ error: "album not found!" });
       } else {
-        console.log(album);
         res.status(200).json({
           album: album,
         });
+        console.log(album);
       }
     } catch (err) {
       console.log(err);
-      throw new Error(err);
+
+      return;
     }
   },
-  addOneAlbum: async (req, res) => {
-    const { title, band, year } = req.body;
-    await Album.findOrCreate({
-      where: { title: title },
+  addAlbum: async (req, res) => {
+    const { title, band, year, cover_url } = req.body;
+    /*  if (title && band && year === "null" && "" && "undefined") {
+      return res.status(400).json({ error: `une erreur s'est produite` });
+    } */
+    console.log(req.body);
+    /*const newAlbum = await Album.findOrCreate({
+      where: { title: title, band: band },
     });
-    if (title) {
+    if (newAlbum) {
+      console.log({ error: "album exists" });
       res.status(400).json({ album: `can't create, exists` });
+      return;
+    } else {*/
+    const newAlbum = await Album.create({
+      title: title,
+      band: band,
+      year: year,
+      cover_url: cover_url,
+    });
+    return res.status(200).json({ album: "created", newAlbum });
+    /*    } */
+  },
+  deleteAlbum: async (req, res) => {
+    const id = req.params.id;
+    const album = await Album.findOne({
+      where: { id: id },
+    });
+    if (album) {
+      console.log("album found");
+      await Album.destroy({ where: { id: id } });
+      return res.status(200).json({ success: "album deleted " + id });
     } else {
-      await album.create({
-        titel: title,
-        band: band,
-        year: year,
-      });
-      res.status(200).json({ album: "created", album });
+      return res.status(400).json({ error: "album not found with this " + id });
     }
   },
 };

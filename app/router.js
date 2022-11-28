@@ -16,8 +16,9 @@ router.post("/signup", userController.signup);
 router.get("/user/:username", userController.getUserByUsername);
 //albums
 router.get("/albums", albumController.getAlbums);
-router.get("/album/:id", albumController.getOneAlbumByID);
-router.post("/album/addAlbum", albumController.addOneAlbum);
+router.get("/albums/:id", albumController.getOneAlbumByID);
+router.post("/albums/addAlbum", albumController.addAlbum);
+router.delete("/albums/deleteAlbum/:id", albumController.deleteAlbum);
 
 /* router.get("/album/:name", albumController.getAlbumByName); */
 
